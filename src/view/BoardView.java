@@ -3,6 +3,7 @@ package view;
 import controller.BoardController;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.transform.Translate;
 import model.Board;
 import model.Sweet;
 
@@ -26,6 +27,7 @@ public class BoardView extends GridPane implements Observer {
 
         board.addVue(this);
 
+
         refreshGrid();
 
     }
@@ -38,6 +40,12 @@ public class BoardView extends GridPane implements Observer {
             for (int j = 0; j < board.getHeight(); j++) {
                 Sweet sweet = grid[i][j];
                 SweetView sweetView = new SweetView(sweet);
+
+                if(sweet.isStateChanged()) {
+                    final Translate translate = new Translate(100, 100);
+                    sweetView.getTransforms().add(translate);
+                }
+
                 sweetView.addEventHandler(MouseEvent.MOUSE_CLICKED, boardController);
                 this.add(sweetView, sweet.getCol(), sweet.getRow());
             }

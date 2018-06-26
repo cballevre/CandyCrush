@@ -50,10 +50,9 @@ public class BoardController implements EventHandler{
 
     public boolean searchLine(Sweet selected) {
 
-        return false;
+        return true;
 
 
     }
-
 
 }
