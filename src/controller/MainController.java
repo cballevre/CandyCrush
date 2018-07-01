@@ -22,7 +22,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        Board board = new Board(4, 4);
+        Board board = new Board(8, 8);
         BoardController boardController = new BoardController(board);
         BoardView boardView = new BoardView(board, boardController);
 

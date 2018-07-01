@@ -1,6 +1,11 @@
 package view;
 
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+import model.Direction;
 import model.Sweet;
 import utils.RessourceManager;
 
@@ -13,7 +18,6 @@ public class SweetView extends ImageView implements Observer {
 
     public SweetView(Sweet sweet) {
         this.sweet = sweet;
-
         init();
     }
 
@@ -32,6 +36,8 @@ public class SweetView extends ImageView implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+
         setImage(RessourceManager.getAssets(sweet.getColor(), sweet.getType(), sweet.isSelected()));
+
     }
 }

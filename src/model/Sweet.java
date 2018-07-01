@@ -1,5 +1,9 @@
 package model;
 
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 import utils.Math;
 
 import java.util.Observable;
@@ -9,11 +13,14 @@ public class Sweet extends Observable implements Observer {
 
     private Color color;
     private TypeSweet type = TypeSweet.NORMAL;
-    private boolean isSelected = false;
-    private boolean stateChanged = false;
-    private Direction moves = null;
+
     private int col;
     private int row;
+
+    private boolean selected = false;
+    private boolean deleted = false;
+    private boolean stateChanged = false;
+    private Direction moves = null;
 
     public Sweet(Color color, int col, int row) {
         this.color = color;
@@ -42,15 +49,24 @@ public class Sweet extends Observable implements Observer {
 
     public void setType(TypeSweet type) {
         this.type = type;
+        notifView();
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
     }
 
     public void setSelected(boolean selected) {
-        isSelected = selected;
+        this.selected = selected;
         notifView();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Direction getMoves() {

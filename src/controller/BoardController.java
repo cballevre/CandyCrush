@@ -2,13 +2,11 @@ package controller;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import model.Board;
-import model.Color;
-import model.Direction;
-import model.Sweet;
+import model.*;
 import view.SweetView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BoardController implements EventHandler{
 
@@ -28,13 +26,10 @@ public class BoardController implements EventHandler{
 
             if(selected.isNeighbor(clicked)) {
 
-                board.setGrid(swapSweet(board.getGrid(), selected, clicked));
+                board.swapSweet(selected, clicked);
 
-                if(!scan(selected) && !scan(clicked)) {
-                    board.setGrid(swapSweet(board.getGrid(),clicked, selected));
-                }
+                detectHorizontalChain(selected);
 
-                selected.setSelected(false);
                 selected = null;
 
             } else {
@@ -48,145 +43,67 @@ public class BoardController implements EventHandler{
         }
     }
 
-    private boolean makeCombo() {
-
-        boolean result = true;
-        Sweet[][] grid = board.getGrid();
-
-        for (int j = 0; j < board.getHeight(); j++) {
-            for (int i = 0; i < board.getWidth(); i++) {
-                Sweet sweet = grid[i][j];
-                if(sweet != null) {
-                    ArrayList<Sweet> listRow = test(sweet, Direction.RIGHT);
-
-                    if((listRow.size() + 1) >= 3) {
-                        grid = removeListSweet(grid, listRow);
-                        result = false;
-                    }
-
-                    if(!result) {
-                        grid = removeSweet(grid, sweet);
-                    }
-
-                }
-            }
-        }
-
-        board.setGrid(grid);
-
-        return result;
-
-    }
-
-    private boolean reorder() {
-
-        boolean result = true;
-        Sweet[][] grid = board.getGrid();
-
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
-                if(grid[i][j] == null) {
-                    try {
-                        Sweet sweet = grid[i][j-1];
-                        if(grid[i][j-1] != null) {
-                            grid = replaceSweet(grid, grid[i][j-1], i, j);
-                        }
-                    } catch (Exception e) {
-                        Sweet sweet = Sweet.makeRandom(i,j);
-                        grid[i][j] = sweet;
-                    }
-                    result = false;
-                }
-            }
-        }
-
-        board.setGrid(grid);
-
-        return result;
-
-    }
-
-    private boolean scan(Sweet sweet) {
+    private boolean gameEngine(Sweet selected, Sweet clicked) {
 
         boolean result = false;
+
+        ArrayList<Sweet> deleted = new ArrayList<>();
+        deleted.addAll(scan(selected));
+        deleted.addAll(scan(clicked));
+
+        if(deleted.size() > 0) {
+            reorder(deleted);
+            makeCombo(deleted);
+            result = true;
+        }
+
+        return result;
+    }
+
+    private boolean makeCombo(ArrayList<Sweet> deleted) {
+
+        boolean result = true;
         Sweet[][] grid = board.getGrid();
+        ArrayList<Sweet> deleted2 = new ArrayList<>();
 
-        ArrayList<Sweet> listCol = new ArrayList<>();
-        ArrayList<Sweet> listRow = new ArrayList<>();
-
-        listRow.addAll(test(sweet, Direction.LEFT));
-        listRow.addAll(test(sweet, Direction.RIGHT));
-
-        listCol.addAll(test(sweet, Direction.UP));
-        listCol.addAll(test(sweet, Direction.DOWN));
-
-        if((listCol.size() + 1) >= 3) {
-            grid = removeListSweet(grid, listCol);
-            result = true;
+        for (Sweet sweet : deleted) {
+            deleted2.addAll(scan(grid[sweet.getCol()][sweet.getRow()]));
         }
 
-        if((listRow.size() + 1) >= 3) {
-            grid = removeListSweet(grid, listRow);
-            result = true;
-        }
+        reorder(deleted2);
 
-        if(result) {
-            grid = removeSweet(grid, sweet);
-            board.setGrid(grid);
-        }
+        board.setGrid(grid);
 
         return result;
 
     }
 
-    private ArrayList<Sweet> test(Sweet sweet, Direction direction) {
+    private void reorder(ArrayList<Sweet> delected) {
 
-        Color sweetColor = sweet.getColor();
-        ArrayList<Sweet> list = new ArrayList<>();
+        boolean test;
         Sweet[][] grid = board.getGrid();
-        boolean test = true;
-        int i = 1;
 
         do {
+            test = true;
 
-            Sweet selected = null;
+            for (Sweet sweet : delected) {
+                if(sweet.isDeleted()) {
+                    try {
+                        Sweet upper = grid[sweet.getCol()][sweet.getRow()-1];
+                        if(!upper.isDeleted()) {
+                            grid = swapSweet(grid, sweet, upper);
+                            test = false;
+                        }
+                    } catch (Exception e) {
+                        grid = generateSweet(grid, sweet.getCol(), sweet.getRow());
+                    }
 
-            try {
-                if(direction.getX() != 0) {
-                    selected = grid[sweet.getCol() + (i * direction.getX())][sweet.getRow()];
-                } else {
-                    selected = grid[sweet.getCol()][sweet.getRow() + (i * direction.getY())];
                 }
-
-                if(selected.getColor() == sweetColor) {
-                    list.add(selected);
-                } else{
-                    test = false;
-                }
-
-            } catch (Exception e) {
-                test = false;
             }
+        } while (!test);
 
+        board.setGrid(grid);
 
-            i++;
-
-        } while(test);
-
-        return list;
-
-    }
-
-    public Sweet[][] removeListSweet(Sweet[][] grid, ArrayList<Sweet> list) {
-        for (Sweet sweet : list) {
-            grid[sweet.getCol()][sweet.getRow()] = null;
-        }
-        return grid;
-    }
-
-    public Sweet[][] removeSweet(Sweet[][] grid, Sweet sweet) {
-        grid[sweet.getCol()][sweet.getRow()] = null;
-        return grid;
     }
 
     public Sweet[][] swapSweet(Sweet[][] grid, Sweet selected, Sweet clicked) {
@@ -208,30 +125,109 @@ public class BoardController implements EventHandler{
         grid[tmpCol][tmpRow] = clicked;
         clicked.setCol(tmpCol);
         clicked.setRow(tmpRow);
-        System.out.println(Direction.valueOf(x1, y1));
         clicked.setMoves(Direction.valueOf(x1, y1));
 
         return grid;
 
     }
 
-    public Sweet[][] replaceSweet(Sweet[][] grid, Sweet sweet, int i, int j) {
-
-        int tmpCol = sweet.getCol();
-        int tmpRow = sweet.getRow();
-
-        int x = sweet.getCol() - i;
-        int y = sweet.getRow() - j;
-
+    public Sweet[][] generateSweet(Sweet[][] grid, int i, int j) {
+        Sweet sweet = Sweet.makeRandom(i, j);
         grid[i][j] = sweet;
-        sweet.setCol(i);
-        sweet.setRow(j);
-        sweet.setMoves(Direction.valueOf(x, y));
-
-        grid[tmpCol][tmpRow] = null;
 
         return grid;
+    }
+
+    private ArrayList<Chain> detectChains(Sweet sweet) {
+
+        boolean result = false;
+
+        Chain horizontalChain = new Chain(ChainType.Horizontal);
+        Chain verticalChain = new Chain(ChainType.Vertical);
+
+
+
+        listRow.addAll(test(sweet, Direction.LEFT));
+        listRow.addAll(test(sweet, Direction.RIGHT));
+
+        listCol.addAll(test(sweet, Direction.UP));
+        listCol.addAll(test(sweet, Direction.DOWN));
+
+        ArrayList<Sweet> delected = new ArrayList<>();
+
+        if((listCol.size() + 1) > 2) {
+            if((listCol.size() + 1) > 3) {
+                System.out.println(listCol.size());
+                Sweet sweetSpecial = listCol.remove(listCol.size()/2);
+                sweetSpecial.setType(TypeSweet.COL);
+            }
+            delected.addAll(listCol);
+            result = true;
+        }
+
+        if((listRow.size() + 1) >= 3) {
+            if((listRow.size() + 1) >= 4) {
+                Sweet sweetSpecial = listRow.remove(listRow.size()/2);
+                sweetSpecial.setType(TypeSweet.ROW);
+            }
+            delected.addAll(listRow);
+            result = true;
+        }
+
+        if(result) {
+            delected.add(sweet);
+            board.setGrid(grid);
+        }
+
+        board.removeListSweet(delected);
+
+        return delected;
 
     }
+    
+
+    private ArrayList<Sweet> test(Sweet sweet, Direction direction) {
+
+        Color sweetColor = sweet.getColor();
+        ArrayList<Sweet> list = new ArrayList<>();
+        Sweet[][] grid = board.getGrid();
+        boolean test = true;
+        int i = 1;
+
+        do {
+
+            Sweet selected = null;
+
+            try {
+                if(direction.getX() != 0) {
+                    selected = grid[sweet.getCol() + (i * direction.getX())][sweet.getRow()];
+
+                } else {
+                    selected = grid[sweet.getCol()][sweet.getRow() + (i * direction.getY())];
+                }
+
+                if(selected.getColor() == sweetColor) {
+                    list.add(selected);
+                } else{
+                    test = false;
+                }
+
+            } catch (Exception e) {
+                test = false;
+            }
+
+            i++;
+
+        } while(test);
+
+        if(direction.getY() < 0) {
+            Collections.reverse(list);
+        }
+
+        return list;
+
+    }
+
+
 
 }

@@ -27,22 +27,17 @@ public enum Direction {
             if(direction.getY() < 0) {
                 y = 3 + y;
             }
-
             directions[x][y] = direction;
-
         }
-
     }
 
     public static Direction valueOf(int x, int y) {
-
         if(x < 0) {
             x = 3 + x;
         }
         if(y < 0) {
             y = 3 + y;
         }
-
         return (Direction) directions[x][y];
     }
 
