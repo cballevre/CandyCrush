@@ -1,0 +1,9 @@
+#pane {
+    -fx-background-image: url("/ressources/img/bk_candycrush.jpg");
+    -fx-background-position: center;
+    -fx-background-size: cover;
+}
+
+#container {
+    -fx-background-color: rgba(0,0,0,0.3);
+}

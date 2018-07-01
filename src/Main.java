@@ -1,31 +1,22 @@
-import controller.BoardController;
+import controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import model.Board;
-import model.Sweet;
-import view.BoardView;
 
 public class Main extends Application {
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
-    public void start(Stage stage) throws Exception{
+    public void start(Stage stage) throws Exception {
 
-        FlowPane root = new FlowPane();
-
-        Board board = new Board(8, 8);
-        BoardController boardController = new BoardController(board);
-        BoardView boardView = new BoardView(board, boardController);
-
-        //board.setHeight(8);
-
-        root.getChildren().add(boardView);
+        Parent root = FXMLLoader.load(getClass().getResource("view/MainView.fxml"));
 
         stage.setTitle("Candy crush");
         stage.setWidth(800);
@@ -35,8 +26,4 @@ public class Main extends Application {
         stage.setOnCloseRequest(e-> Platform.exit());
     }
 
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

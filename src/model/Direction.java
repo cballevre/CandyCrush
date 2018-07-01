@@ -35,9 +35,6 @@ public enum Direction {
 
     public static Direction valueOf(int x, int y) {
 
-        System.out.println(x);
-        System.out.println(y);
-
         if(x < 0) {
             x = 3 + x;
         }

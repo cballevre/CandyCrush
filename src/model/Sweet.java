@@ -11,6 +11,7 @@ public class Sweet extends Observable implements Observer {
     private TypeSweet type = TypeSweet.NORMAL;
     private boolean isSelected = false;
     private boolean stateChanged = false;
+    private Direction moves = null;
     private int col;
     private int row;
 
@@ -50,6 +51,14 @@ public class Sweet extends Observable implements Observer {
     public void setSelected(boolean selected) {
         isSelected = selected;
         notifView();
+    }
+
+    public Direction getMoves() {
+        return moves;
+    }
+
+    public void setMoves(Direction moves) {
+        this.moves = moves;
     }
 
     public boolean isStateChanged() {
@@ -106,14 +115,6 @@ public class Sweet extends Observable implements Observer {
 
         boolean result = false;
 
-        int x = sweet.getCol() - getCol();
-        int y = sweet.getRow() - getRow();
-
-
-
-
-        System.out.println(Direction.valueOf(x, y).toString());
-
         if(sweet.getCol() == col) {
             if(sweet.getRow() + 1 == row || sweet.getRow() - 1 == row) {
                 result = true;
@@ -123,8 +124,6 @@ public class Sweet extends Observable implements Observer {
                 result = true;
             }
         }
-
-
 
         return result;
     }

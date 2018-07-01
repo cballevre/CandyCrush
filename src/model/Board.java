@@ -34,6 +34,7 @@ public class Board extends Observable implements Observer{
 
     public void setGrid(Sweet[][] grid) {
         this.grid = grid;
+        notifVues();
     }
 
     public void addVue(Observer vue) {
@@ -69,23 +70,6 @@ public class Board extends Observable implements Observer{
     public void setHeight(int height) {
         this.height = height;
         notifVues();
-    }
-
-    public void swapSweet(Sweet selected, Sweet clicked) {
-
-        int tmpCol = selected.getCol();
-        int tmpRow = selected.getRow();
-
-        grid[clicked.getCol()][clicked.getRow()] = selected;
-        selected.setCol(clicked.getCol());
-        selected.setRow(clicked.getRow());
-
-        grid[tmpCol][tmpRow] = clicked;
-        clicked.setCol(tmpCol);
-        clicked.setRow(tmpRow);
-
-        notifVues();
-
     }
 
 }
