@@ -28,9 +28,10 @@ public enum Direction {
                 y = 3 + y;
             }
 
-
             directions[x][y] = direction;
+
         }
+
     }
 
     public static Direction valueOf(int x, int y) {
@@ -39,7 +40,7 @@ public enum Direction {
             x = 3 + x;
         }
         if(y < 0) {
-            y = 3 + x;
+            y = 3 + y;
         }
 
         return (Direction) directions[x][y];

@@ -30,15 +30,7 @@ public class BoardController implements EventHandler{
 
                 board.setGrid(swapSweet(board.getGrid(), selected, clicked));
 
-                if(scan(selected)) {
-                    boolean reorder = false;
-                    do {
-                        reorder = reorder();
-                        System.out.println(reorder);
-                    } while (!reorder);
-                    makeCombo();
-
-                } else {
+                if(!scan(selected) && !scan(clicked)) {
                     board.setGrid(swapSweet(board.getGrid(),clicked, selected));
                 }
 
@@ -50,14 +42,39 @@ public class BoardController implements EventHandler{
                 selected = clicked;
                 selected.setSelected(true);
             }
-
         } else {
             selected = clicked;
             selected.setSelected(true);
         }
     }
 
-    private void makeCombo() {
+    private boolean makeCombo() {
+
+        boolean result = true;
+        Sweet[][] grid = board.getGrid();
+
+        for (int j = 0; j < board.getHeight(); j++) {
+            for (int i = 0; i < board.getWidth(); i++) {
+                Sweet sweet = grid[i][j];
+                if(sweet != null) {
+                    ArrayList<Sweet> listRow = test(sweet, Direction.RIGHT);
+
+                    if((listRow.size() + 1) >= 3) {
+                        grid = removeListSweet(grid, listRow);
+                        result = false;
+                    }
+
+                    if(!result) {
+                        grid = removeSweet(grid, sweet);
+                    }
+
+                }
+            }
+        }
+
+        board.setGrid(grid);
+
+        return result;
 
     }
 
@@ -102,9 +119,6 @@ public class BoardController implements EventHandler{
 
         listCol.addAll(test(sweet, Direction.UP));
         listCol.addAll(test(sweet, Direction.DOWN));
-
-        System.out.println("Col : " + (listCol.size() + 1));
-        System.out.println("Row : " + (listRow.size() + 1));
 
         if((listCol.size() + 1) >= 3) {
             grid = removeListSweet(grid, listCol);
@@ -194,6 +208,7 @@ public class BoardController implements EventHandler{
         grid[tmpCol][tmpRow] = clicked;
         clicked.setCol(tmpCol);
         clicked.setRow(tmpRow);
+        System.out.println(Direction.valueOf(x1, y1));
         clicked.setMoves(Direction.valueOf(x1, y1));
 
         return grid;
