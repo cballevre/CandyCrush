@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController" stylesheets="/ressources/css/style.css">
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ProgressBar?>
+<AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="/ressources/css/style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <VBox alignment="CENTER" layoutX="124.0" layoutY="128.0" prefHeight="303.0" prefWidth="216.0" fx:id="container"/>
+      <MenuBar prefHeight="29.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Jeu">
+            <items>
+               <MenuItem mnemonicParsing="false" onAction="#newGame" text="Nouvelle partie" />
+               <MenuItem mnemonicParsing="false" onAction="#stat" text="Statistiques" />
+               <MenuItem mnemonicParsing="false" onAction="#exit" text="Quitter" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <HBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="29.0">
+
+         <VBox alignment="CENTER">
+             <HBox alignment="CENTER">
+
+                 <Text text="Score : "/>
+                 <Text fx:id="score" text="250 000"/>
+             </HBox>
+             <HBox fx:id="container">
+
+             </HBox>
+         </VBox>
+      </HBox>
    </children>
 </AnchorPane>

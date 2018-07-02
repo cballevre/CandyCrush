@@ -15,15 +15,14 @@ public class RessourceManager {
         result += color.name().toLowerCase();
         if(type != TypeSweet.NORMAL) {
             result += "_" + type.name().toLowerCase();
-        }
-        if(selected) {
-            result += "_selected";
+        } else {
+            if (selected) {
+                result += "_selected";
+            }
         }
         result += ".png";
 
-
         InputStream url = RessourceManager.class.getResourceAsStream(result);
-
 
         return new Image(url);
     }

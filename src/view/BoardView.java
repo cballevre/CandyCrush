@@ -2,21 +2,15 @@ package view;
 
 import controller.BoardController;
 import javafx.animation.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import model.Board;
 import model.Direction;
 import model.Sweet;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public class BoardView extends GridPane implements Observer {
 
@@ -46,8 +40,8 @@ public class BoardView extends GridPane implements Observer {
 
         ParallelTransition parallelTransition = new ParallelTransition();
 
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
+        for (int i = 0; i < board.getNbCol(); i++) {
+            for (int j = 0; j < board.getNbRow(); j++) {
                 Sweet sweet = grid[j][i];
 
                 if (sweet != null) {

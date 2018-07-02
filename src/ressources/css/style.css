@@ -4,6 +4,7 @@
     -fx-background-size: cover;
 }
 
-#container {
+#gameboard {
     -fx-background-color: rgba(0,0,0,0.3);
 }
+

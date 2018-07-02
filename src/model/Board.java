@@ -6,72 +6,52 @@ import java.util.Observer;
 
 public class Board extends Observable{
 
+    /**
+     * Data of the game board
+     */
     private Sweet[][] grid;
-    private int width;
-    private int height;
 
-    public Board(int with, int height) {
-        this.width = with;
-        this.height = height;
+    /**
+     * Horizontal length of the game board
+     */
+    private int nbCol;
+
+    /**
+     * Vertical length of the game board
+     */
+    private int nbRow;
+
+    /**
+     * Create a new game board
+     * @param nbCol : Horizontal length
+     * @param nbRow : Vertical length
+     */
+    public Board(int nbCol, int nbRow) {
+        this.nbCol = nbCol;
+        this.nbRow = nbCol;
 
         init();
     }
 
+    /**
+     * Generate a random game board fill with sweet
+     */
     private void init() {
 
-        grid = new Sweet[width][height];
+        grid = new Sweet[nbCol][nbRow];
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        for (int col = 0; col < nbCol; col++) {
+            for (int row = 0; row < nbRow; row++) {
                 Sweet sweet;
                 do {
-                    sweet = Sweet.makeRandom(i, j);
-                } while ((i >= 2 && grid[i - 1][j].getColor() == sweet.getColor() && grid[i - 2][j].getColor() == sweet.getColor())
-                || (j >= 2 && grid[i][j - 1].getColor() == sweet.getColor() && grid[i][j - 2].getColor() == sweet.getColor()));
-                grid[i][j] = sweet;
+                    sweet = Sweet.makeRandom(col, row);
+                } while ((col >= 2 && grid[col - 1][row].getColor() == sweet.getColor() && grid[col - 2][row].getColor() == sweet.getColor())
+                || (row >= 2 && grid[col][row - 1].getColor() == sweet.getColor() && grid[col][row - 2].getColor() == sweet.getColor()));
+                grid[col][row] = sweet;
             }
         }
     }
 
-    public Sweet[][] getGrid() {
-        return grid;
-    }
-
-    public void setGrid(Sweet[][] grid) {
-        this.grid = grid;
-        notifVues();
-    }
-
-    public void addVue(Observer vue) {
-        addObserver(vue);
-    }
-
-    public void removeVue(Observer vue) {
-        deleteObserver(vue);
-    }
-
-    public void notifVues() {
-        setChanged();
-        notifyObservers();
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-        notifVues();
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-        notifVues();
-    }
 
     public void removeListSweet(ArrayList<Sweet> list) {
         for (Sweet sweet : list) {
@@ -131,6 +111,52 @@ public class Board extends Observable{
     public void generateSweet(int i, int j) {
         Sweet sweet = Sweet.makeRandom(i, j);
         grid[i][j] = sweet;
+        notifVues();
+    }
+
+
+    /**
+     *
+     * @param vue
+     */
+    public void addVue(Observer vue) {
+        addObserver(vue);
+    }
+
+    public void removeVue(Observer vue) {
+        deleteObserver(vue);
+    }
+
+    public void notifVues() {
+        setChanged();
+        notifyObservers();
+    }
+
+
+    public Sweet[][] getGrid() {
+        return grid;
+    }
+
+    public void setGrid(Sweet[][] grid) {
+        this.grid = grid;
+        notifVues();
+    }
+
+    public int getNbCol() {
+        return nbCol;
+    }
+
+    public void setNbCol(int nbCol) {
+        this.nbCol = nbCol;
+        notifVues();
+    }
+
+    public int getNbRow() {
+        return nbRow;
+    }
+
+    public void setNbRow(int nbRow) {
+        this.nbRow = nbRow;
         notifVues();
     }
 
